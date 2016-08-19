@@ -1,4 +1,4 @@
-# @kuali/rucksack
+# @kuali/client-build
 
 A package to make front-end builds much simpler. Gone are the days where you can
 just slap a `<script>` and a `<link>` tag on an html page and be ready to go.
@@ -55,7 +55,7 @@ touch src/index.js # Create blank index.js
 Next, install this package:
 
 ```sh
-npm install --save-dev @kuali/rucksack
+npm install --save-dev @kuali/client-build
 ```
 
 Add the following scripts to your `package.json`
@@ -63,8 +63,8 @@ Add the following scripts to your `package.json`
 ```js
 {
   "scripts": {
-    "start": "rucksack start",
-    "build": "rucksack build"
+    "start": "client-build start",
+    "build": "client-build build"
   }
 }
 ```
