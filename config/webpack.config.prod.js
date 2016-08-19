@@ -43,13 +43,6 @@ module.exports = {
     moduleTemplates: ['*-loader']
   },
   module: {
-    preLoaders: [
-      {
-        test: /\.js$/,
-        loader: 'eslint',
-        include: paths.appSrc
-      }
-    ],
     loaders: [
       {
         test: /\.js$/,
@@ -120,10 +113,6 @@ module.exports = {
         }
       }
     ]
-  },
-  eslint: {
-    configFile: path.join(__dirname, 'eslint.js'),
-    useEslintrc: false
   },
   postcss: () => [
     autoprefixer({
