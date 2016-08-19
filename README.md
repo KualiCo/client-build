@@ -89,11 +89,24 @@ a `config.proxy` value.
   "config": {
     "proxy": {
       "/api*": {
-        target: 'http://localhost:3000'
+        "target": "http://localhost:3000"
       }
     }
   }
 }
 ```
+
+If you want to have a different directory where your client stuff lives, then
+specify a `config.clientDir` property in your `package.json`.
+
+```js
+{
+  "config": {
+    "clientDir": "client"
+  }
+}
+```
+
+This really just changes where your `index.html` and your `src` gets read from.
 
 Additional configuration will be made available upon request.

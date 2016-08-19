@@ -2,11 +2,17 @@
 
 const path = require('path')
 
+const appPackageJson = path.resolve('package.json')
+const appPackage = require(appPackageJson)
+const root = path.resolve()
+
+const clientDir = (appPackage.config && appPackage.config.clientDir) || ''
+
 module.exports = {
-  appBuild: path.resolve('build'),
-  appHtml: path.resolve('index.html'),
-  appPackageJson: path.resolve('package.json'),
-  appSrc: path.resolve('src'),
-  appNodeModules: path.resolve('node_modules'),
-  ownNodeModules: path.resolve(__dirname, '..', 'node_modules')
+  appPackageJson,
+  appHtml: path.join(root, clientDir, 'index.html'),
+  appSrc: path.join(root, clientDir, 'src'),
+  appBuild: path.join(root, 'build'),
+  appNodeModules: path.join(root, 'node_modules'),
+  ownNodeModules: path.join(__dirname, '..', 'node_modules')
 }
