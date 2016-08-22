@@ -24,7 +24,7 @@ function runDevServer(port) {
     contentBase: paths.clientDir,
     publicPath: config.output.publicPath,
     hot: true,
-    quiet: true,
+    quiet: false,
     historyApiFallback: true
   })
 
