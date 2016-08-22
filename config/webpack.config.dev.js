@@ -11,7 +11,7 @@ const paths = require('./paths')
 const env = require('./env')
 const pkg = require(paths.appPackageJson)
 
-const dashboard = new Dashboard()
+// const dashboard = new Dashboard()
 
 const modulesDirectories = ['node_modules']
   .concat(pkg.config && pkg.config.modulesDirectories)
@@ -132,6 +132,6 @@ module.exports = {
     }),
     new webpack.DefinePlugin(env),
     new webpack.HotModuleReplacementPlugin(),
-    new DashboardPlugin(dashboard.setData)
+    // new DashboardPlugin(dashboard.setData)
   ]
 }
