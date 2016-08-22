@@ -9,6 +9,7 @@ const combineLoaders = require('webpack-combine-loaders')
 const url = require('url')
 const paths = require('./paths')
 const env = require('./env')
+const pkg = require(paths.appPackageJson)
 
 if (env['process.env.NODE_ENV'] !== '"production"') {
   throw new Error('Production builds must have NODE_ENV=production.')
@@ -108,13 +109,6 @@ module.exports = {
         query: {
           limit: 10000,
           name: 'static/media/[name].[hash:8].[ext]'
-        }
-      },
-      {
-        test: /\.html$/,
-        loader: 'html',
-        query: {
-          attrs: ['link:href'],
         }
       }
     ]

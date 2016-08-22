@@ -7,6 +7,7 @@ const WebpackDevServer = require('webpack-dev-server')
 const inquirer = require('inquirer')
 const detect = require('detect-port')
 const opn = require('opn')
+const paths = require('../config/paths')
 const config = require('../config/webpack.config.dev')
 
 const DEFAULT_PORT = process.env.PORT || 8080
@@ -20,6 +21,7 @@ function setupCompiler(webpackConfig) {
 function runDevServer(port) {
   const compiler = setupCompiler(config)
   const devServer = new WebpackDevServer(compiler, {
+    contentBase: paths.clientDir,
     publicPath: config.output.publicPath,
     hot: true,
     quiet: true,

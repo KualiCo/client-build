@@ -9,6 +9,7 @@ const root = path.resolve()
 const clientDir = (appPackage.config && appPackage.config.clientDir) || ''
 
 module.exports = {
+  clientDir: path.join(root, clientDir),
   appPackageJson,
   appHtml: path.join(root, clientDir, 'index.html'),
   appSrc: path.join(root, clientDir, 'src'),
