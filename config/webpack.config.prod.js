@@ -20,6 +20,10 @@ if (!publicPath.endsWith('/')) publicPath += '/'
 
 const extract = new ExtractTextPlugin('static/css/[name].[contenthash:8].css')
 
+const modulesDirectories = ['node_modules']
+  .concat(pkg.config && pkg.config.modulesDirectories)
+  .filter(Boolean)
+
 module.exports = {
   bail: true,
   devtool: 'source-map',
@@ -33,6 +37,7 @@ module.exports = {
     publicPath
   },
   resolve: {
+    modulesDirectories,
     extensions: ['.js', '.json', ''],
     alias: {
       'babel-runtime/regenerator': require.resolve('babel-runtime/regenerator')

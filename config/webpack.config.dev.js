@@ -13,6 +13,10 @@ const pkg = require(paths.appPackageJson)
 
 const dashboard = new Dashboard()
 
+const modulesDirectories = ['node_modules']
+  .concat(pkg.config && pkg.config.modulesDirectories)
+  .filter(Boolean)
+
 module.exports = {
   devtool: 'eval',
   entry: [
@@ -27,6 +31,7 @@ module.exports = {
     publicPath: '/'
   },
   resolve: {
+    modulesDirectories,
     extensions: ['.js', '.json', ''],
     alias: {
       'babel-runtime/regenerator': require.resolve('babel-runtime/regenerator')

@@ -109,4 +109,34 @@ specify a `config.clientDir` property in your `package.json`.
 
 This really just changes where your `index.html` and your `src` gets read from.
 
+If you want to have additional directories where modules can be loaded from
+without having to put in a relative path, then you can use the
+`"modulesDirectories"` option in the config. For example, if you have the
+following setup:
+
+```js
+// src/index.js
+import MainComponent from 'common/MainComponent'
+```
+
+```js
+// lib/common/MainComponent.js
+import React from 'react'
+
+export default () => (<h1>Hello World</h1>)
+```
+
+```js
+// package.json
+{
+  "config": {
+    "modulesDirectories": "lib"
+  }
+}
+```
+
+Now in addition to having paths being resolved in `node_modules`, paths can now
+be resolved in additional directories. You can pass in an array or a single
+value.
+
 Additional configuration will be made available upon request.
