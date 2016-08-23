@@ -23,7 +23,8 @@ function runDevServer(port) {
     publicPath: config.output.publicPath,
     hot: true,
     quiet: false,
-    historyApiFallback: true
+    historyApiFallback: true,
+    proxy: paths.proxy
   })
 
   devServer.listen(port)

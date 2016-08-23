@@ -10,6 +10,7 @@ const clientDir = (appPackage.config && appPackage.config.clientDir) || ''
 const port = process.env.PORT
   || (appPackage.config && appPackage.config.devServerPort)
   || 8080
+const proxy = (appPackage.config && appPackage.config.proxy)
 
 module.exports = {
   clientDir: path.join(root, clientDir),
@@ -19,5 +20,6 @@ module.exports = {
   appBuild: path.join(root, 'build'),
   appNodeModules: path.join(root, 'node_modules'),
   ownNodeModules: path.join(__dirname, '..', 'node_modules'),
-  port
+  port,
+  proxy
 }
