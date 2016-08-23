@@ -32,7 +32,7 @@ function runDevServer(port) {
 function start() {
   detect(paths.port)
     .then((port) => {
-      if (port === DEFAULT_PORT) return port
+      if (port === paths.port) return port
       return inquirer
         .prompt([{
           type: 'confirm',
