@@ -10,8 +10,6 @@ const opn = require('opn')
 const paths = require('../config/paths')
 const config = require('../config/webpack.config.dev')
 
-const DEFAULT_PORT = process.env.PORT || 8080
-
 function setupCompiler(webpackConfig) {
   const compiler = webpack(webpackConfig)
 
@@ -32,7 +30,7 @@ function runDevServer(port) {
 }
 
 function start() {
-  detect(DEFAULT_PORT)
+  detect(paths.port)
     .then((port) => {
       if (port === DEFAULT_PORT) return port
       return inquirer
