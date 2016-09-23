@@ -4,15 +4,13 @@ process.env.NODE_ENV = 'development'
 
 const webpack = require('webpack')
 const WebpackDevServer = require('webpack-dev-server')
-const inquirer = require('inquirer')
-const detect = require('detect-port')
 const opn = require('opn')
+const meta = require('../config/meta')
 const paths = require('../config/paths')
-const config = require('../config/webpack.config.dev')
+const config = require('../config/webpack.dev')
 
 function setupCompiler(webpackConfig) {
   const compiler = webpack(webpackConfig)
-
   return compiler
 }
 
@@ -22,36 +20,17 @@ function runDevServer(port) {
     contentBase: paths.clientDir,
     publicPath: config.output.publicPath,
     hot: true,
-    quiet: false,
+    stats: { colors: true },
+    quiet: meta.dashboard,
     historyApiFallback: true,
-    proxy: paths.proxy
+    proxy: meta.proxy,
   })
-
   devServer.listen(port)
 }
 
 function start() {
-  detect(paths.port)
-    .then((port) => {
-      if (port === paths.port) return port
-      return inquirer
-        .prompt([{
-          type: 'confirm',
-          name: 'shouldChangePort',
-          message: [
-            `Port ${DEFAULT_PORT} is already in use.`,
-            'Use another port?'
-          ].join('\n')
-        }])
-        .then((answers) => {
-          if (answers.shouldChangePort) return port
-        })
-    })
-    .then((port) => {
-      if (!port) return
-      opn(`http://localhost:${port}`)
-      runDevServer(port)
-    })
+  runDevServer(meta.port)
+  opn(`http://localhost:${meta.port}`)
 }
 
 module.exports = start

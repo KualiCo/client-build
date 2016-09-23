@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 'use strict'
 
 const path = require('path')
@@ -5,48 +6,40 @@ const autoprefixer = require('autoprefixer')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const combineLoaders = require('webpack-combine-loaders')
 const url = require('url')
 const paths = require('./paths')
 const env = require('./env')
-const pkg = require(paths.appPackageJson)
 
 if (env['process.env.NODE_ENV'] !== '"production"') {
   throw new Error('Production builds must have NODE_ENV=production.')
 }
 
 const homepagePath = require(paths.appPackageJson).homepage
-const publicPath = homepagePath ? url.parse(homepagePath).pathname : '/'
+let publicPath = homepagePath ? url.parse(homepagePath).pathname : '/'
 if (!publicPath.endsWith('/')) publicPath += '/'
-
-const extract = new ExtractTextPlugin('static/css/[name].[contenthash:8].css')
-
-const modulesDirectories = ['node_modules']
-  .concat(pkg.config && pkg.config.modulesDirectories)
-  .filter(Boolean)
 
 module.exports = {
   bail: true,
   devtool: 'source-map',
   entry: [
-    path.join(paths.appSrc, 'index')
+    require.resolve('./polyfills'),
+    path.join(paths.appSrc, 'index'),
   ],
   output: {
     path: paths.appBuild,
     filename: 'static/js/[name].[chunkhash:8].js',
     chunkFilename: 'static/js/[name].[chunkhash:8].chunk.js',
-    publicPath
+    publicPath,
   },
   resolve: {
-    modulesDirectories,
-    extensions: ['.js', '.json', ''],
+    extensions: [ '.js', '.json', '' ],
     alias: {
-      'babel-runtime/regenerator': require.resolve('babel-runtime/regenerator')
-    }
+      'babel-runtime/regenerator': require.resolve('babel-runtime/regenerator'),
+    },
   },
   resolveLoader: {
     root: paths.ownNodeModules,
-    moduleTemplates: ['*-loader']
+    moduleTemplates: [ '*-loader' ],
   },
   module: {
     loaders: [
@@ -54,75 +47,75 @@ module.exports = {
         test: /\.js$/,
         include: paths.appSrc,
         loader: 'babel',
-        query: require('./babel.prod')
+        query: {
+          babelrc: false,
+          presets: [ require.resolve('./babel-preset') ],
+        },
       },
       {
         test: /\.css$/,
-        include: [paths.appNodeModules],
-        loader: extract.extract('style', 'css?-autoprefixer!postcss')
+        include: [ paths.appNodeModules ],
+        loader: ExtractTextPlugin.extract('style', 'css?-autoprefixer!postcss'),
       },
       {
         test: /\.css$/,
-        include: [paths.appSrc],
-        loader: extract.extract('style', combineLoaders([
-          {
-            loader: 'css',
-            query: {
-              autoprefixer: false,
-              sourceMap: true,
-              modules: true,
-              importLoaders: 1,
-              localIdentName: '[hash:base64:8]'
-            }
-          },
-          {
-            loader: 'postcss'
-          }
-        ]))
+        include: [ paths.appSrc ],
+        loader: ExtractTextPlugin.extract('style', [
+          `css?${[
+            '-autoprefixer',
+            'sourceMap',
+            'modules',
+            'importLoaders=1',
+            'localIdentName=[hash:base64:8]'
+          ].join('&')}`,
+          'postcss'
+        ].join('!')),
       },
       {
         test: /\.json$/,
-        include: [paths.appSrc, paths.appNodeModules],
-        loader: 'json'
+        include: [ paths.appSrc, paths.appNodeModules ],
+        loader: 'json',
       },
       {
-        test: /\.(ico|jpg|png|gif|eot|svg|ttf|woff|woff2)(\?.*)?$/,
+        test: /\.(ico|jpg|png|gif|eot|otf|svg|ttf|woff|woff2)(\?.*)?$/,
         exclude: /\/favicon.ico$/,
-        include: [paths.appSrc, paths.appNodeModules],
+        include: [ paths.appSrc, paths.appNodeModules ],
         loader: 'file',
         query: {
-          name: 'static/media/[name].[hash:8].[ext]'
-        }
+          name: 'static/media/[name].[hash:8].[ext]',
+        },
       },
       {
         test: /\/favicon.ico$/,
-        include: [paths.appSrc],
+        include: [ paths.appSrc ],
         loader: 'file',
         query: {
-          name: 'favicon.ico?[hash:8]'
-        }
+          name: 'favicon.ico?[hash:8]',
+        },
       },
       {
         test: /\.(mp4|webm)(\?.*)?$/,
-        include: [paths.appSrc, paths.appNodeModules],
+        include: [ paths.appSrc, paths.appNodeModules ],
         loader: 'url',
         query: {
           limit: 10000,
-          name: 'static/media/[name].[hash:8].[ext]'
-        }
-      }
+          name: 'static/media/[name].[hash:8].[ext]',
+        },
+      },
+    ],
+  },
+  postcss() {
+    return [
+      autoprefixer({
+        browsers: [
+          '>1%',
+          'last 4 versions',
+          'Firefox ESR',
+          'not ie < 9',
+        ],
+      }),
     ]
   },
-  postcss: () => [
-    autoprefixer({
-      browsers: [
-        '>1%',
-        'last 4 versions',
-        'Firefox ESR',
-        'not ie < 9',
-      ]
-    }),
-  ],
   plugins: [
     new HtmlWebpackPlugin({
       inject: true,
@@ -137,25 +130,25 @@ module.exports = {
         keepClosingSlash: true,
         minifyJS: true,
         minifyCSS: true,
-        minifyURLs: true
-      }
+        minifyURLs: true,
+      },
     }),
     new webpack.DefinePlugin(env),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
-        screw_ie8: true,
-        warnings: false
+        screw_ie8: true, // eslint-disable-line camelcase
+        warnings: false,
       },
       mangle: {
-        screw_ie8: true
+        screw_ie8: true, // eslint-disable-line camelcase
       },
       output: {
         comments: false,
-        screw_ie8: true
-      }
+        screw_ie8: true, // eslint-disable-line camelcase
+      },
     }),
-    extract
-  ]
+    new ExtractTextPlugin('static/css/[name].[contenthash:8].css'),
+  ],
 }

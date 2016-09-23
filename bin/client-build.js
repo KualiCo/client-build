@@ -1,19 +1,33 @@
 #!/usr/bin/env node
+/* eslint-disable global-require */
 'use strict'
 
 const program = require('commander')
 const pkg = require('../package.json')
 
-const VALID_SCRIPTS = [
-  'build',
-  'start'
-]
-
 program
   .version(pkg.version)
-  .arguments('<cmd>')
-  .action((cmd) => {
-    if (VALID_SCRIPTS.indexOf(cmd) === -1) return program.help()
-    require(`../scripts/${cmd}`)()
-  })
-  .parse(process.argv)
+
+program
+  .command('build')
+  .description('Run a production client build')
+  .action(() => require('../scripts/build')())
+
+program
+  .command('start')
+  .description('Run the development watcher for your client assets')
+  .action(() => require('../scripts/start')())
+
+program
+  .command('test')
+  .description('Run the client tests')
+  .action(() => require('../scripts/test')())
+
+program
+  .command('help')
+  .description('Display command usage')
+  .action(() => program.help())
+
+program.parse(process.argv)
+
+if (!program.args.length) program.help()

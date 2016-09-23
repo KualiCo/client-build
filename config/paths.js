@@ -1,25 +1,22 @@
 'use strict'
 
 const path = require('path')
+const meta = require('./meta')
 
-const appPackageJson = path.resolve('package.json')
-const appPackage = require(appPackageJson)
-const root = path.resolve()
-
-const clientDir = (appPackage.config && appPackage.config.clientDir) || ''
-const port = process.env.PORT
-  || (appPackage.config && appPackage.config.devServerPort)
-  || 8080
-const proxy = (appPackage.config && appPackage.config.proxy)
+const appResolve = path.resolve.bind(path, meta.appDir)
+const selfResolve = path.resolve.bind(path, __dirname, '..')
 
 module.exports = {
-  clientDir: path.join(root, clientDir),
-  appPackageJson,
-  appHtml: path.join(root, clientDir, 'index.html'),
-  appSrc: path.join(root, clientDir, 'src'),
-  appBuild: path.join(root, 'build'),
-  appNodeModules: path.join(root, 'node_modules'),
-  ownNodeModules: path.join(__dirname, '..', 'node_modules'),
-  port,
-  proxy
+  appBuild: appResolve(meta.build),
+  appHtml: appResolve(meta.html),
+  appPackageJson: appResolve(meta.packageJson),
+  appSrc: appResolve(meta.src),
+  tests: arrifyPrefix(meta.tests, meta.src),
+  testSetup: arrifyPrefix(meta.testSetup, ''),
+  appNodeModules: appResolve('node_modules'),
+  ownNodeModules: selfResolve('node_modules'),
+}
+
+function arrifyPrefix(vals, prefix) {
+  return [].concat(vals).map((val) => appResolve(prefix, val))
 }

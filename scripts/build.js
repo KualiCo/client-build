@@ -1,3 +1,4 @@
+/* eslint-disable no-console, no-process-exit */
 'use strict'
 
 process.env.NODE_ENV = 'production'
@@ -5,11 +6,12 @@ process.env.NODE_ENV = 'production'
 const rimrafSync = require('rimraf').sync
 const webpack = require('webpack')
 const chalk = require('chalk')
-const config = require('../config/webpack.config.prod')
+const bytes = require('bytes')
+const config = require('../config/webpack.prod')
 const paths = require('../config/paths')
 
 function build() {
-  rimrafSync(paths.appBuild + '/*')
+  rimrafSync(`${paths.appBuild}/*`)
   webpack(config).run((err, stats) => {
     if (err) {
       console.error(err.message || err)
@@ -19,9 +21,9 @@ function build() {
   })
 }
 
-const SYNTAX_ERROR_LABEL = 'Syntax error:';
+const SYNTAX_ERROR_LABEL = 'Syntax error:'
 function isSyntaxError(message) {
-  return message.indexOf(SYNTAX_ERROR_LABEL) !== -1;
+  return message.indexOf(SYNTAX_ERROR_LABEL) !== -1
 }
 function formatMessage(message) {
   return message
@@ -33,29 +35,49 @@ function formatMessage(message) {
     .replace(/^\s*at\s.*:\d+:\d+[\s\)]*\n/gm, '')
 }
 
-function onFinished(stats) {
-  const hasErrors = stats.hasErrors();
-  const hasWarnings = stats.hasWarnings();
-
-  const json = stats.toJson({}, true);
+function parseStats(stats) {
+  const json = stats.toJson({}, true)
   const formattedErrors = json.errors
     .map((message) => `Error in ${formatMessage(message)}`)
     .filter(isSyntaxError)
   const formattedWarnings = json.warnings
     .map((message) => `Warning in ${formatMessage(message)}`)
 
-  if (hasErrors) {
-    console.log(chalk.red('Failed to compile.\n'))
-    formattedErrors.forEach((message) => console.log(`${message}\n`))
-    return
+  return {
+    hasErrors: stats.hasErrors(),
+    hasWarnings: stats.hasWarnings(),
+    errors: formattedErrors,
+    warnings: formattedWarnings,
+    assets: json.assets,
+    chunks: json.chunks,
   }
-  if (hasWarnings) {
+}
+
+function onFinished(stats) {
+  stats = parseStats(stats)
+
+  if (stats.hasErrors) {
+    console.log(chalk.red('Failed to compile.\n'))
+    return stats.errors.forEach((message) => console.log(`${message}\n`))
+  }
+  if (stats.hasWarnings) {
     console.log(chalk.yellow('Compiled with warnings.\n'))
-    formattedWarnings.forEach((message) => console.log(`${message}\n`))
-    return
+    return stats.warnings.forEach((message) => console.log(`${message}\n`))
   }
 
-  console.log(chalk.green('Compiled successfully!'))
+  console.log(chalk.green('\n Compiled successfully!\n'))
+
+  const appSize = stats.assets
+    .sort((a, b) => b.size - a.size)
+    .filter((asset) => !(/\.map$/).test(asset.name))
+    .reduce((total, asset) => {
+      console.log(`  ${bytes(asset.size)} -> ${asset.name} \n`)
+      return total + asset.size
+    }, 0)
+  return console.log(
+    '\n',
+    chalk.bold.underline(`Total app size: ${bytes(appSize)}\n`)
+  )
 }
 
 module.exports = build
