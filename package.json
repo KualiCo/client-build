@@ -1,6 +1,6 @@
 {
   "name": "@kuali/client-build",
-  "version": "0.0.13",
+  "version": "0.1.0",
   "description": "A node module to help simplify client build in this overconfigured mess that is modern front-end development",
   "main": "index.js",
   "bin": {
