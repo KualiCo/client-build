@@ -64,7 +64,8 @@ Add the following scripts to your `package.json`
 {
   "scripts": {
     "start": "client-build start",
-    "build": "client-build build"
+    "build": "client-build build",
+    "test": "client-build test"
   }
 }
 ```
@@ -81,62 +82,36 @@ npm start
 npm run build
 ```
 
-If you want to proxy requests to another server, in your `package.json`, specify
-a `config.proxy` value.
+# Config
 
-```js
-{
-  "config": {
-    "proxy": {
-      "/api*": {
-        "target": "http://localhost:3000"
-      }
-    }
-  }
-}
-```
+All configuration is put into your `package.json` under the `clientBuild` key.
+There are sensible defaults for everything, but the following options are
+available to you (All paths are relative to the current working directory)
 
-If you want to have a different directory where your client stuff lives, then
-specify a `config.clientDir` property in your `package.json`.
+- `build` - Defaults to `'build'`. This is the directory where you built assets
+  are put into.
+- `html` - Defaults to `'index.html'`. The path to your `index.html`
+- `src` - Defaults to `'src'`. The directory where your client source code is.
+- `tests` - An array of patterns for your test files. Defaults to:
+  ```js
+  [
+    '**/__tests__/*.js',
+    '**/*.spec.js',
+    '**/*.test.js',
+  ]
+  ```
+- `modulesDirectories` - Defaults to `null`. If you'd like to have additional
+  directories that `require()` will resolve to (so you don't have to put in
+  relative paths), then pass in an array of paths to directories here.
+- `testSetup` - Defaults to `null`. If you have any files that need to
+  be `require`d before tests start running, to it there. You may pass in an
+  array of files.
+- `dashboard` - Defaults to `true`. Shows the webpack dashboard for the start
+  command.
+- `proxy` - Defaults to `null`. This is for proxy options that gets passed into
+  `webpack-dev-server`
+- `port` - Defaults to `8080`. The port to bind to for development.
 
-```js
-{
-  "config": {
-    "clientDir": "client"
-  }
-}
-```
-
-This really just changes where your `index.html` and your `src` gets read from.
-
-If you want to have additional directories where modules can be loaded from
-without having to put in a relative path, then you can use the
-`"modulesDirectories"` option in the config. For example, if you have the
-following setup:
-
-```js
-// src/index.js
-import MainComponent from 'common/MainComponent'
-```
-
-```js
-// lib/common/MainComponent.js
-import React from 'react'
-
-export default () => (<h1>Hello World</h1>)
-```
-
-```js
-// package.json
-{
-  "config": {
-    "modulesDirectories": "lib"
-  }
-}
-```
-
-Now in addition to having paths being resolved in `node_modules`, paths can now
-be resolved in additional directories. You can pass in an array or a single
-value.
-
-Additional configuration will be made available upon request.
+Additional configuration can be added upon request and further discussion. The
+idea is to minimize the amount of configuration you need to get started while
+also being flexible to other people's development environments.

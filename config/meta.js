@@ -17,7 +17,7 @@ module.exports = Object.assign(
       '**/*.test.js',
     ],
     modulesDirectories: null,
-    testSetup: 'test/setup',
+    testSetup: null,
     dashboard: true,
     proxy: null,
     port: 8080,

@@ -5,7 +5,7 @@ const Mocha = require('mocha')
 const globby = require('globby')
 const paths = require('../config/paths')
 const mochaConfig = require('../config/mocha')
-const babelConfig = require('../config/babel.dev')
+const babelConfig = require('../config/babel-preset')
 
 function test() {
   const mocha = new Mocha(mochaConfig)

@@ -18,5 +18,7 @@ module.exports = {
 }
 
 function arrifyPrefix(vals, prefix) {
-  return [].concat(vals).map((val) => appResolve(prefix, val))
+  return [].concat(vals)
+    .filter(Boolean)
+    .map((val) => appResolve(prefix, val))
 }
