@@ -1,6 +1,7 @@
 /* eslint-disable global-require */
 'use strict'
 
+const url = require('url')
 const path = require('path')
 const autoprefixer = require('autoprefixer')
 const webpack = require('webpack')
@@ -16,6 +17,10 @@ const modulesDirectories = [ 'node_modules' ]
   .concat(meta.modulesDirectories)
   .filter(Boolean)
 
+const homepagePath = require(paths.appPackageJson).homepage
+let publicPath = homepagePath ? url.parse(homepagePath).pathname : '/'
+if (!publicPath.endsWith('/')) publicPath += '/'
+
 module.exports = {
   devtool: 'eval',
   entry: [
@@ -28,7 +33,7 @@ module.exports = {
     path: paths.appBuild,
     pathinfo: true,
     filename: 'static/js/bundle.js',
-    publicPath: '/',
+    publicPath,
   },
   resolve: {
     modulesDirectories,
