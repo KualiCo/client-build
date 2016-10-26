@@ -22,7 +22,7 @@ let publicPath = homepagePath ? url.parse(homepagePath).pathname : '/'
 if (!publicPath.endsWith('/')) publicPath += '/'
 
 module.exports = {
-  devtool: 'eval',
+  devtool: 'source-map',
   entry: [
     `${require.resolve('webpack-dev-server/client')}?/`,
     require.resolve('webpack/hot/dev-server'),
