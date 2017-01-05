@@ -58,6 +58,11 @@ module.exports = {
         loader: ExtractTextPlugin.extract('style', 'css?-autoprefixer!postcss'),
       },
       {
+        test: /\.s(a|c)ss$/,
+        include: [ paths.appNodeModules ],
+        loader: ExtractTextPlugin.extract('style', 'css?importLoaders=2!postcss!sass?outputStyle=compressed'),
+      },
+      {
         test: /\.css$/,
         include: [ paths.appSrc ],
         loader: ExtractTextPlugin.extract('style', [
@@ -69,6 +74,18 @@ module.exports = {
             'localIdentName=[hash:base64:8]'
           ].join('&')}`,
           'postcss'
+        ].join('!')),
+      },
+      {
+        test: /\.s(a|c)ss$/,
+        include: [ paths.appSrc ],
+        loader: ExtractTextPlugin.extract('style', [
+          `css?${[
+            'sourceMap',
+            'importLoaders=1',
+          ].join('&')}`,
+          'postcss',
+          'sass?outputStyle=compressed',
         ].join('!')),
       },
       {

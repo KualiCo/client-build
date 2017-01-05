@@ -67,6 +67,11 @@ module.exports = {
         loader: 'style!css?-autoprefixer!postcss',
       },
       {
+        test: /\.s(a|c)ss$/,
+        include: [ paths.appNodeModules ],
+        loader: 'style!css?importLoaders=2!postcss!sass?sourceMap&outputStyle=expanded',
+      },
+      {
         test: /\.css$/,
         include: [ paths.appSrc ],
         loader: [
@@ -75,9 +80,22 @@ module.exports = {
             'sourceMap',
             'modules',
             'importLoaders=1',
-            'localIdentName=[name]__[local]___[hash:base64:5]'
+            'localIdentName=[name]__[local]___[hash:base64:5]',
           ].join('&')}`,
           'postcss',
+        ].join('!'),
+      },
+      {
+        test: /\.s(a|c)ss$/,
+        include: [ paths.appSrc ],
+        loader: [
+          'style',
+          `css?${[
+            'sourceMap',
+            'importLoaders=2',
+          ].join('&')}`,
+          'postcss',
+          'sass?sourceMap&outputStyle=expanded',
         ].join('!'),
       },
       {
