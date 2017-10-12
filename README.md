@@ -1,5 +1,9 @@
 # @kuali/client-build
 
+*Deprecated* This should not be used. The idea was good, but in practice, it just
+became so much of a hassle. Opt to use your own webpack config, or `react-scripts`
+or `next` to manage client build/development projects.
+
 A package to make front-end builds much simpler. Gone are the days where you can
 just slap a `<script>` and a `<link>` tag on an html page and be ready to go.
 With the oversaturated configurations for babel and webpack, it can be hard to
