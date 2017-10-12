@@ -1,6 +1,6 @@
 # @kuali/client-build
 
-*Deprecated* This should not be used. The idea was good, but in practice, it just
+**Deprecated** - This should not be used. The idea was good, but in practice, it just
 became so much of a hassle. Opt to use your own webpack config, or `react-scripts`
 or `next` to manage client build/development projects.
 
